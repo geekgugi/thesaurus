@@ -20,6 +20,7 @@ function(MainTemplate, Router) {
 
     var MainView = Backbone.View.extend({
 
+        el:'.page',
         initialize: function() {
             _.bindAll(this, 'render');
             this.render();	
