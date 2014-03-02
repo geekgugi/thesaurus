@@ -1,0 +1,20 @@
+@import url('bootstrap.min.css');
+@import url('fullcalendar.css');
+@import url('bootstrap-combobox.css');
+@import url('font-awesome.css');
+
+body {
+    padding-top: 80px;
+    padding-bottom: 60px;
+}
+
+#word-details {
+	background-color: #fff;
+}
+html.busy, html.busy * {
+	cursor: wait !important;
+}
+.inline {
+	display: inline;
+}
+
