@@ -5,7 +5,7 @@ This app is written using python bottle framework which provides restful service
 At the front end side, backbone framework is used.
 
 
-load the mongo db file mongo db typing following command:
+load the mongo db file by typing following command:
 
 ```
  $ mongoimport --db <database> --collection <collection> --type json --file data.json --jsonArray 
