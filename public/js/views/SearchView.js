@@ -37,6 +37,7 @@ define([
         },
         clearAll: function(){
             this.$('#word-details').addClass('hide');
+            this.$('#noword').addClass('hide');
             this.$('#word-search').val('');
         },
         searchWord: function(query, process) {
@@ -47,10 +48,16 @@ define([
             return that.dictionaryCollection.fetch({
                 success: function(wordList) {
                     var array = [];
-                    _.each(wordList.models, function(model) {
-                        model.set('display', model.get('word'));
-                        array.push(model.get('display'));
-                    });
+                    if(wordList.length !== 0){
+                        _.each(wordList.models, function(model) {
+                            model.set('display', model.get('word'));
+                            array.push(model.get('display'));
+                        });
+                    } else {
+                        this.$('#word-details').removeClass('hide');
+                        $(that.el).find('li').remove();
+                        this.$('#noword').removeClass('hide');
+                    }
                     return process(array);
                 },
                 error: function(wordList, response, options) {
@@ -86,6 +93,7 @@ define([
         },
         showDetails: function(wordModel) {
             $(this.el).find('li').remove();
+            this.$('#noword').addClass('hide');
             this.$('#word-details').removeClass('hide');
             _.each(wordModel.get('meaning'), function(value){
                 var li = '<li class="list-group-item">'+value+'</li>';
