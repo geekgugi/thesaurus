@@ -1,11 +1,11 @@
 Thesaurus app
 ================
 
-This app is written using bottle framework which provides restful services.
+This app is written using python bottle framework which provides restful services.
 At the front end side, backbone framework is used.
 
 
-load the file mongo db using following command:
+load the mongo db file mongo db typing following command:
 
 ```
  $ mongoimport --db <database> --collection <collection> --type json --file data.json --jsonArray 
