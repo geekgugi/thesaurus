@@ -30,6 +30,25 @@ class DictionaryDAO:
         self.dictionary = self.db.dictionary
 
     def find_word(self, query):
+        results = []
+        #TODO: can we use map reduce ?
+        for letter in query:
+            jsonArray = self.dictionary.find({'word':{'$regex':letter}}, {'_id':0, 'meaning':0})
+            data = json.loads(jsonArray)
+            # print data
+            words = []
+            for element in data:
+                if len(element['word']) < 6:
+                    words.append(element['word'])
+                    inputList = list(query)
+                    for word in words:
+                        if all(x in inputList for x in list(word)):
+                            for letter in word:
+                                inputList.remove(letter)
+                            results.append(word)
+        #fetch the meanings of all words in result
+        for word in results:
+                jsonResult = self.dictionary.find({'word':word}, {'_id':0})
         #TODO: validate the query 
-        return  self.dictionary.find({'word':{'$regex':query}},{'_id':0})
+        #return  self.dictionary.find({'word':{'$regex':query}},{'_id':0})
 
