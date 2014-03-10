@@ -19,6 +19,8 @@ import random
 import string
 import hashlib
 import pymongo
+import json
+import re
 
 
 # The Dictionary  Data Access Object handles all interactions with the 
@@ -28,27 +30,39 @@ class DictionaryDAO:
     def __init__(self, db):
         self.db = db
         self.dictionary = self.db.dictionary
+        self.results = []
 
     def find_word(self, query):
-        results = []
         #TODO: can we use map reduce ?
         for letter in query:
+            # is it better to query again rather than carrying unwanted data
+            # all arround ? No need if 'meaning' as of now,  will query again
             jsonArray = self.dictionary.find({'word':{'$regex':letter}}, {'_id':0, 'meaning':0})
             data = json.loads(jsonArray)
-            # print data
-            words = []
-            for element in data:
-                if len(element['word']) < 6:
-                    words.append(element['word'])
-                    inputList = list(query)
-                    for word in words:
-                        if all(x in inputList for x in list(word)):
-                            for letter in word:
-                                inputList.remove(letter)
-                            results.append(word)
+            inputList = list(query)
+            process_input(inputList, data)
         #fetch the meanings of all words in result
+        jsonArrayResult = []
         for word in results:
-                jsonResult = self.dictionary.find({'word':word}, {'_id':0})
-        #TODO: validate the query 
-        #return  self.dictionary.find({'word':{'$regex':query}},{'_id':0})
+            jsonArrayResult.append(self.dictionary.find_one({'word':word}, {'_id':0}))
+        # meanings  of the filtered words
+        return json.dumps(jsonArrayResult) 
+            
+    def process_input(inputList, data):
+        words = []
+        for element in data:
+            # I guess this was the requirement
+            if len(element['word']) < 6:
+                words.append(element['word'])
+                filter_words(words, inputList)
+
+    def filter_words(self, words, inputList):
+        for word in words:
+            # extract word and filter the inputList
+            if all(x in inputList for x in list(word)):
+                for letter in word:
+                    inputList.remove(letter)
+                # for test cases
+                print word
+                self.results.append(word)
 
